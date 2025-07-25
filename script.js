@@ -8,6 +8,38 @@ $(this).text(type === "password" ? "Show Password" : "Hide Password");
         
 
     });
+
+    $("#toggleCnfPassword").click(function() {
+        const cnfPasswordField = $("#cnf-password");
+        const type = cnfPasswordField.attr("type") === "password" ? "text" : "password";
+        cnfPasswordField.attr("type", type);
+
+        $(this).text(type === "password" ? "Show Confirm Password" : "Hide Confirm Password");
+    });
+
+
+
+    // Prevent non-digit characters in phone input
+    $("#phone").on("keypress", function(e) {
+        const charCode = e.which ? e.which : e.keyCode;
+        // Allow only digits (0-9), charCode 48-57
+        if (charCode < 48 || charCode > 57) {
+            e.preventDefault();
+        }
+    });
+
+    // Also prevent pasting non-digit characters
+    $("#phone").on("paste", function(e) {
+        const pasteData = e.originalEvent.clipboardData.getData('text');
+        if (!/^\d+$/.test(pasteData)) {
+            e.preventDefault();
+        }
+    });
+
+
+
+
+
     function isValidEmail(email) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -51,11 +83,18 @@ $(this).text(type === "password" ? "Show Password" : "Hide Password");
             return;
         }
 
+        if($("#password").val() !== $("#cnf-password").val()) {
+            showMessage("Passwords do not match.", "error");
+            return;
+        }
+
         if(!isStrongPassword(password)){
             showMessage("Password must contain uppercase, lowercase, digit, and be 6+ characters with one special charachter.", "error");
             return;
 
         }
+
+
 
         showMessage("Form submitted successfully!", "success");
 
