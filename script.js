@@ -38,6 +38,26 @@ $(this).text(type === "password" ? "Show Password" : "Hide Password");
 
 
 
+    // Prevent non-digit characters and restrict to 10 digits in phone input
+$("#phone").on("keypress", function(e) {
+    const charCode = e.which ? e.which : e.keyCode;
+    const inputValue = $(this).val();
+
+    // Allow only digits (0-9), charCode 48-57
+    if (charCode < 48 || charCode > 57 || inputValue.length >= 10) {
+        e.preventDefault();
+    }
+});
+
+// Also prevent pasting more than 10 digits or non-digit characters
+$("#phone").on("paste", function(e) {
+    const pasteData = e.originalEvent.clipboardData.getData('text');
+    const inputValue = $(this).val();
+    if (!/^\d+$/.test(pasteData) || (inputValue.length + pasteData.length > 10)) {
+        e.preventDefault();
+    }
+});
+
 
 
     function isValidEmail(email) {
